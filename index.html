@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NcStudio CAD</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="./manifest.json" crossorigin="use-credentials" />
+  <meta name="application-name" content="NcStudio CAD/CAM" />
+  <meta name="apple-mobile-web-app-title" content="NcStudio CAD/CAM" />
+  <meta name="theme-color" content="#f7f7f7" />
+  <meta name="msapplication-TileColor" content="#0078d4" />
+  <meta name="color-scheme" content="light dark" />
+
+  <script>
+    (() => {
+      const lightThemeColor = '#f7f7f7';
+      const darkThemeColor = '#201f1f';
+      const savedTheme = localStorage.getItem('cad-theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const useDarkTheme = savedTheme === 'dark' || ((savedTheme === null || savedTheme === 'system') && prefersDark);
+      const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+
+      if (themeColorMeta) {
+        themeColorMeta.setAttribute('content', useDarkTheme ? darkThemeColor : lightThemeColor);
+      }
+    })();
+  </script>
+
+  <!-- Favicon -->
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+
+  <style>
+    /* Body padding will be handled by React component */
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+  <script type="module" crossorigin src="./assets/index-BlD56CZk.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/vendor-C_wXJcmB.js">
+  <link rel="modulepreload" crossorigin href="./assets/ui-D-bVRiNg.js">
+  <link rel="stylesheet" crossorigin href="./assets/ui-CriPRN-J.css">
+  <link rel="stylesheet" crossorigin href="./assets/index-yMMXtzGN.css">
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+
+</html>

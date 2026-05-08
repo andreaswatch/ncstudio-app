@@ -1,0 +1,31 @@
+{
+  "id": "/",
+  "name": "NcStudio CAD",
+  "short_name": "NcStudio",
+  "description": "Installierbare Windows-PWA fuer die NcStudio CAD/CAM Arbeitsoberflaeche.",
+  "lang": "de-DE",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone"
+  ],
+  "orientation": "landscape",
+  "background_color": "#f3f3f3",
+  "theme_color": "#f7f7f7",
+  "categories": [
+    "productivity",
+    "utilities",
+    "graphics"
+  ],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

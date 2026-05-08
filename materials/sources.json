@@ -1,0 +1,132 @@
+[
+  {
+    "profile": "default",
+    "asset": "Metal009",
+    "download": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Metal009_YvADakOS/Metal009_1K-JPG.zip",
+    "zip": "https://ambientCG.com/get?file=Metal009_1K-JPG.zip",
+    "copied": {
+      "albedo.jpg": "Metal009_1K-JPG_Color.jpg",
+      "roughness.jpg": "Metal009_1K-JPG_Roughness.jpg",
+      "metallic.jpg": "Metal009_1K-JPG_Metalness.jpg",
+      "normal.jpg": "Metal009_1K-JPG_NormalGL.jpg"
+    }
+  },
+  {
+    "profile": "steel",
+    "asset": "Metal055A",
+    "download": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Metal055A_ADgPOyYL/Metal055A_1K-JPG.zip",
+    "zip": "https://ambientCG.com/get?file=Metal055A_1K-JPG.zip",
+    "copied": {
+      "albedo.jpg": "Metal055A_1K-JPG_Color.jpg",
+      "roughness.jpg": "Metal055A_1K-JPG_Roughness.jpg",
+      "metallic.jpg": "Metal055A_1K-JPG_Metalness.jpg",
+      "normal.jpg": "Metal055A_1K-JPG_NormalGL.jpg"
+    }
+  },
+  {
+    "profile": "aluminium",
+    "asset": "Metal050A",
+    "download": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Metal050A_qpDLl6hA/Metal050A_1K-JPG.zip",
+    "zip": "https://ambientCG.com/get?file=Metal050A_1K-JPG.zip",
+    "copied": {
+      "albedo.jpg": "Metal050A_1K-JPG_Color.jpg",
+      "roughness.jpg": "Metal050A_1K-JPG_Roughness.jpg",
+      "metallic.jpg": "Metal050A_1K-JPG_Metalness.jpg",
+      "normal.jpg": "Metal050A_1K-JPG_NormalGL.jpg"
+    }
+  },
+  {
+    "profile": "stainless-steel",
+    "asset": "Metal051A",
+    "download": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Metal051A_IRF1BAdO/Metal051A_1K-JPG.zip",
+    "zip": "https://ambientCG.com/get?file=Metal051A_1K-JPG.zip",
+    "copied": {
+      "albedo.jpg": "Metal051A_1K-JPG_Color.jpg",
+      "roughness.jpg": "Metal051A_1K-JPG_Roughness.jpg",
+      "metallic.jpg": "Metal051A_1K-JPG_Metalness.jpg",
+      "normal.jpg": "Metal051A_1K-JPG_NormalGL.jpg"
+    }
+  },
+  {
+    "profile": "painted",
+    "asset": "PaintedMetal004",
+    "download": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/PaintedMetal004_kByIs2KW/PaintedMetal004_1K-JPG.zip",
+    "zip": "https://ambientCG.com/get?file=PaintedMetal004_1K-JPG.zip",
+    "copied": {
+      "albedo.jpg": "PaintedMetal004_1K-JPG_Color.jpg",
+      "roughness.jpg": "PaintedMetal004_1K-JPG_Roughness.jpg",
+      "metallic.jpg": "PaintedMetal004_1K-JPG_Metalness.jpg",
+      "normal.jpg": "PaintedMetal004_1K-JPG_NormalGL.jpg"
+    }
+  },
+  {
+    "profile": "plastic",
+    "asset": "Plastic013A",
+    "download": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Plastic013A_qNe4isv1/Plastic013A_1K-JPG.zip",
+    "zip": "https://ambientCG.com/get?file=Plastic013A_1K-JPG.zip",
+    "copied": {
+      "albedo.jpg": "Plastic013A_1K-JPG_Color.jpg",
+      "roughness.jpg": "Plastic013A_1K-JPG_Roughness.jpg",
+      "normal.jpg": "Plastic013A_1K-JPG_NormalGL.jpg"
+    }
+  },
+  {
+    "profile": "abs",
+    "asset": "Plastic017A",
+    "download": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Plastic017A_l3LHPDYO/Plastic017A_1K-JPG.zip",
+    "zip": "https://ambientCG.com/get?file=Plastic017A_1K-JPG.zip",
+    "copied": {
+      "albedo.jpg": "Plastic017A_1K-JPG_Color.jpg",
+      "roughness.jpg": "Plastic017A_1K-JPG_Roughness.jpg",
+      "normal.jpg": "Plastic017A_1K-JPG_NormalGL.jpg"
+    }
+  },
+  {
+    "profile": "brushed-alu",
+    "asset": "Metal051C",
+    "download": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Metal051C_0NR9QtOa/Metal051C_1K-JPG.zip",
+    "zip": "https://ambientCG.com/get?file=Metal051C_1K-JPG.zip",
+    "copied": {
+      "albedo.jpg": "Metal051C_1K-JPG_Color.jpg",
+      "roughness.jpg": "Metal051C_1K-JPG_Roughness.jpg",
+      "metallic.jpg": "Metal051C_1K-JPG_Metalness.jpg",
+      "normal.jpg": "Metal051C_1K-JPG_NormalGL.jpg"
+    }
+  },
+  {
+    "profile": "brushed-stainless",
+    "asset": "Metal011",
+    "download": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Metal011_LREPzVwv/Metal011_1K-JPG.zip",
+    "zip": "https://ambientCG.com/get?file=Metal011_1K-JPG.zip",
+    "copied": {
+      "albedo.jpg": "Metal011_1K-JPG_Color.jpg",
+      "roughness.jpg": "Metal011_1K-JPG_Roughness.jpg",
+      "metallic.jpg": "Metal011_1K-JPG_Metalness.jpg",
+      "normal.jpg": "Metal011_1K-JPG_NormalGL.jpg"
+    }
+  },
+  {
+    "profile": "rusty",
+    "asset": "Metal041C",
+    "download": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Metal041C_pbIcKeow/Metal041C_1K-JPG.zip",
+    "zip": "https://ambientCG.com/get?file=Metal041C_1K-JPG.zip",
+    "copied": {
+      "albedo.jpg": "Metal041C_1K-JPG_Color.jpg",
+      "roughness.jpg": "Metal041C_1K-JPG_Roughness.jpg",
+      "metallic.jpg": "Metal041C_1K-JPG_Metalness.jpg",
+      "normal.jpg": "Metal041C_1K-JPG_NormalGL.jpg"
+    }
+  },
+  {
+    "profile": "cast-iron",
+    "asset": "Metal052A",
+    "download": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Metal052A_sRdbSfMl/Metal052A_1K-JPG.zip",
+    "zip": "https://ambientCG.com/get?file=Metal052A_1K-JPG.zip",
+    "copied": {
+      "albedo.jpg": "Metal052A_1K-JPG_Color.jpg",
+      "roughness.jpg": "Metal052A_1K-JPG_Roughness.jpg",
+      "metallic.jpg": "Metal052A_1K-JPG_Metalness.jpg",
+      "normal.jpg": "Metal052A_1K-JPG_NormalGL.jpg"
+    }
+  }
+]
