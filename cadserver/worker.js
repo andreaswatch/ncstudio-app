@@ -128,6 +128,23 @@ function toVectorVec3FromArray(points) {
   }
   return vec;
 }
+function normalizeSketchEdgeSpecForWasm(spec) {
+  const normalized = { ...spec };
+  if (Array.isArray(normalized.splinePoints)) {
+    normalized.splinePoints = toVectorVec3FromArray(normalized.splinePoints);
+  }
+  return normalized;
+}
+function toVectorSketchEdgeSpecFromArray(specs) {
+  if (!wasmModule || typeof wasmModule.VectorSketchEdgeSpec !== "function") {
+    return specs;
+  }
+  const vec = new wasmModule.VectorSketchEdgeSpec();
+  for (const spec of specs) {
+    vec.push_back(normalizeSketchEdgeSpecForWasm(spec));
+  }
+  return vec;
+}
 function toVectorFilletRadiusPointFromArray(points) {
   if (!wasmModule || typeof wasmModule.VectorFilletRadiusPoint !== "function") {
     return points;
@@ -256,11 +273,14 @@ function normalizeRequestForWasm(method, request) {
       nextRequest[fieldName] = toVectorDocumentBRepGraphUidFromArray(nextRequest[fieldName]);
     }
   }
-  const vectorDocumentBRepGraphUidArrayFields = ["nodes", "edges"];
+  const vectorDocumentBRepGraphUidArrayFields = method === "ReplaceSketchDraftEdges" ? ["nodes"] : ["nodes", "edges"];
   for (const fieldName of vectorDocumentBRepGraphUidArrayFields) {
     if (Array.isArray(nextRequest[fieldName])) {
       nextRequest[fieldName] = toVectorDocumentBRepGraphUidFromArray(nextRequest[fieldName]);
     }
+  }
+  if (method === "ReplaceSketchDraftEdges" && Array.isArray(nextRequest.edges)) {
+    nextRequest.edges = toVectorSketchEdgeSpecFromArray(nextRequest.edges);
   }
   void method;
   return nextRequest;
