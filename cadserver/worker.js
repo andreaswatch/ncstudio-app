@@ -299,6 +299,9 @@ function sanitizeResponse(data) {
   if (Array.isArray(data)) {
     return data.map((item) => sanitizeResponse(item));
   }
+  if ("value" in data && typeof data.value === "number" && Object.keys(data).indexOf("value") === -1) {
+    return { value: data.value };
+  }
   const result = {};
   try {
     const keys = Object.keys(data);
