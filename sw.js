@@ -1,9 +1,33 @@
-const CACHE_NAME = 'ncstudio-shell-v1'
-const CORE_ASSETS = ['/', '/manifest.json', '/icon.svg', '/icon-maskable.svg', '/offline.html']
+const CACHE_NAME = 'ncstudio-shell-v2'
+const CORE_ASSET_PATHS = [
+  './',
+  './manifest.json',
+  './offline.html',
+  './favicon.svg',
+  './pwa-icon.svg',
+  './pwa-maskable.svg'
+]
+
+function resolveScopeAssetUrl(pathname) {
+  return new URL(pathname, self.registration.scope).href
+}
+
+function isSameOrigin(requestUrl) {
+  return new URL(requestUrl).origin === self.location.origin
+}
+
+function isCoreAssetRequest(requestUrl) {
+  return CORE_ASSET_PATHS.some((assetPath) => resolveScopeAssetUrl(assetPath) === requestUrl)
+}
 
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(CORE_ASSETS)).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME)
+      .then(async cache => {
+        const requests = CORE_ASSET_PATHS.map((assetPath) => new Request(resolveScopeAssetUrl(assetPath), { cache: 'reload' }))
+        await cache.addAll(requests)
+      })
+      .then(() => self.skipWaiting())
   )
 })
 
@@ -20,13 +44,21 @@ self.addEventListener('fetch', event => {
     return
   }
 
+  if (!isSameOrigin(event.request.url)) {
+    return
+  }
+
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request).catch(async () => {
         const cache = await caches.open(CACHE_NAME)
-        return cache.match('/offline.html')
+        return cache.match(resolveScopeAssetUrl('./offline.html'))
       })
     )
+    return
+  }
+
+  if (!isCoreAssetRequest(event.request.url)) {
     return
   }
 
