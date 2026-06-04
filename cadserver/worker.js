@@ -1,6 +1,38 @@
 // src/client/worker.ts
 console.log("[Worker] Script loaded");
 var wasmModule = null;
+function isRecord(value) {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+function expectRecord(value, message) {
+  if (!isRecord(value)) {
+    throw new Error(message);
+  }
+  return value;
+}
+function isNumberArray(value) {
+  return Array.isArray(value) && value.every((entry) => typeof entry === "number");
+}
+function isRecordArray(value) {
+  return Array.isArray(value) && value.every((entry) => isRecord(entry));
+}
+function readNumericTransportValue(value, fallback = 0) {
+  return typeof value === "number" ? value : fallback;
+}
+function getModuleRecord(module) {
+  return module;
+}
+function getModuleMethod(module, method) {
+  const candidate = getModuleRecord(module)?.[method];
+  if (typeof candidate !== "function") {
+    throw new Error(`Method ${method} not found in WASM module`);
+  }
+  return candidate;
+}
+function getVectorFactory(module, factoryName) {
+  const candidate = getModuleRecord(module)?.[factoryName];
+  return typeof candidate === "function" ? candidate : null;
+}
 function resolveSiblingUrl(fileName, baseUrl) {
   const base = new URL(baseUrl, self.location.href);
   const sibling = new URL(fileName, base);
@@ -34,7 +66,10 @@ async function loadWasmModule(moduleUrl) {
   console.log("[Worker] WASM module ready");
 }
 function isEmbindVector(value) {
-  return value !== null && typeof value === "object" && typeof value.size === "function" && typeof value.get === "function";
+  if (!isRecord(value)) {
+    return false;
+  }
+  return typeof value.size === "function" && typeof value.get === "function";
 }
 function vectorToArray(vec) {
   if (!isEmbindVector(vec)) return vec;
@@ -46,10 +81,11 @@ function vectorToArray(vec) {
   return result;
 }
 function toVectorIntFromArray(values) {
-  if (!wasmModule || typeof wasmModule.VectorInt !== "function") {
+  const VectorInt = getVectorFactory(wasmModule, "VectorInt");
+  if (!VectorInt) {
     return values;
   }
-  const vec = new wasmModule.VectorInt();
+  const vec = new VectorInt();
   for (const value of values) {
     vec.push_back(Number(value));
   }
@@ -59,20 +95,22 @@ function createInvalidBRepGraphUid() {
   return { kind: 0, counter: 0, generation: 0 };
 }
 function toVectorBRepGraphUidFromArray(values) {
-  if (!wasmModule || typeof wasmModule.VectorBRepGraphUid !== "function") {
+  const VectorBRepGraphUid = getVectorFactory(wasmModule, "VectorBRepGraphUid");
+  if (!VectorBRepGraphUid) {
     return values;
   }
-  const vec = new wasmModule.VectorBRepGraphUid();
+  const vec = new VectorBRepGraphUid();
   for (const value of values) {
     vec.push_back(value);
   }
   return vec;
 }
 function toVectorDocumentBRepGraphUidFromArray(values) {
-  if (!wasmModule || typeof wasmModule.VectorDocumentBRepGraphUid !== "function") {
+  const VectorDocumentBRepGraphUid = getVectorFactory(wasmModule, "VectorDocumentBRepGraphUid");
+  if (!VectorDocumentBRepGraphUid) {
     return values;
   }
-  const vec = new wasmModule.VectorDocumentBRepGraphUid();
+  const vec = new VectorDocumentBRepGraphUid();
   for (const value of values) {
     vec.push_back(normalizeDocumentBRepGraphUidForWasm(value));
   }
@@ -82,7 +120,7 @@ function isDocumentBRepGraphUidLike(value) {
   if (value === null || typeof value !== "object" || Array.isArray(value) || isEmbindVector(value)) {
     return false;
   }
-  const candidate = value;
+  const candidate = expectRecord(value, "DocumentBRepGraphUid-like value must be an object");
   return typeof candidate.docId === "number" && candidate.uid !== null && typeof candidate.uid === "object";
 }
 function normalizeDocumentBRepGraphUidForWasm(value) {
@@ -112,17 +150,18 @@ function normalizeNestedTransportValueForWasm(value) {
   if (typeof value !== "object") {
     return value;
   }
-  const nextValue = { ...value };
+  const nextValue = { ...expectRecord(value, "Nested transport objects must stay object-shaped") };
   for (const [key, entry] of Object.entries(nextValue)) {
     nextValue[key] = normalizeNestedTransportValueForWasm(entry);
   }
   return nextValue;
 }
 function toVectorVec3FromArray(points) {
-  if (!wasmModule || typeof wasmModule.VectorVec3 !== "function") {
+  const VectorVec3 = getVectorFactory(wasmModule, "VectorVec3");
+  if (!VectorVec3) {
     return points;
   }
-  const vec = new wasmModule.VectorVec3();
+  const vec = new VectorVec3();
   for (const point of points) {
     vec.push_back(point);
   }
@@ -136,20 +175,22 @@ function normalizeSketchEdgeSpecForWasm(spec) {
   return normalized;
 }
 function toVectorSketchEdgeSpecFromArray(specs) {
-  if (!wasmModule || typeof wasmModule.VectorSketchEdgeSpec !== "function") {
+  const VectorSketchEdgeSpec = getVectorFactory(wasmModule, "VectorSketchEdgeSpec");
+  if (!VectorSketchEdgeSpec) {
     return specs;
   }
-  const vec = new wasmModule.VectorSketchEdgeSpec();
+  const vec = new VectorSketchEdgeSpec();
   for (const spec of specs) {
     vec.push_back(normalizeSketchEdgeSpecForWasm(spec));
   }
   return vec;
 }
 function toVectorFilletRadiusPointFromArray(points) {
-  if (!wasmModule || typeof wasmModule.VectorFilletRadiusPoint !== "function") {
+  const VectorFilletRadiusPoint = getVectorFactory(wasmModule, "VectorFilletRadiusPoint");
+  if (!VectorFilletRadiusPoint) {
     return points;
   }
-  const vec = new wasmModule.VectorFilletRadiusPoint();
+  const vec = new VectorFilletRadiusPoint();
   for (const point of points) {
     vec.push_back(point);
   }
@@ -197,7 +238,10 @@ var OPERATION_ENUM_SPECS = {
 function normalizeRequestForWasm(method, request) {
   var _a, _b;
   if (!request || typeof request !== "object") return request;
-  const nextRequest = normalizeNestedTransportValueForWasm({ ...request });
+  const nextRequest = expectRecord(
+    normalizeNestedTransportValueForWasm({ ...request }),
+    `Normalized request for ${method} must stay object-shaped`
+  );
   const enumSpecs = OPERATION_ENUM_SPECS[method];
   if (enumSpecs) {
     for (const spec of enumSpecs) {
@@ -205,10 +249,11 @@ function normalizeRequestForWasm(method, request) {
         nextRequest[_a = spec.field] ?? (nextRequest[_a] = 1);
         continue;
       }
-      const enumObj = wasmModule?.[spec.enumType];
+      const enumObj = getModuleRecord(wasmModule)?.[spec.enumType];
       if (enumObj) {
-        const raw = nextRequest[spec.field] ?? 0;
-        nextRequest[spec.field] = spec.values[raw] !== void 0 ? enumObj[spec.values[raw]] : enumObj[spec.fallback];
+        const enumRecord = expectRecord(enumObj, `${spec.enumType} must be an enum-like object`);
+        const raw = readNumericTransportValue(nextRequest[spec.field]);
+        nextRequest[spec.field] = spec.values[raw] !== void 0 ? enumRecord[spec.values[raw]] : enumRecord[spec.fallback];
       } else {
         nextRequest[_b = spec.field] ?? (nextRequest[_b] = 0);
       }
@@ -257,29 +302,29 @@ function normalizeRequestForWasm(method, request) {
   }
   const vectorIntFields = ["edgeIndices", "faceIndices", "excludeFaces"];
   for (const fieldName of vectorIntFields) {
-    if (Array.isArray(nextRequest[fieldName])) {
+    if (isNumberArray(nextRequest[fieldName])) {
       nextRequest[fieldName] = toVectorIntFromArray(nextRequest[fieldName]);
     }
   }
   const vectorBRepGraphUidFields = ["edgeUids", "faceUids", "excludeFaceUids"];
   for (const fieldName of vectorBRepGraphUidFields) {
-    if (Array.isArray(nextRequest[fieldName])) {
+    if (isRecordArray(nextRequest[fieldName])) {
       nextRequest[fieldName] = toVectorBRepGraphUidFromArray(nextRequest[fieldName]);
     }
   }
   const vectorDocumentBRepGraphUidFields = ["profiles"];
   for (const fieldName of vectorDocumentBRepGraphUidFields) {
-    if (Array.isArray(nextRequest[fieldName])) {
+    if (isRecordArray(nextRequest[fieldName])) {
       nextRequest[fieldName] = toVectorDocumentBRepGraphUidFromArray(nextRequest[fieldName]);
     }
   }
   const vectorDocumentBRepGraphUidArrayFields = method === "ReplaceSketchDraftEdges" ? ["nodes"] : ["nodes", "edges"];
   for (const fieldName of vectorDocumentBRepGraphUidArrayFields) {
-    if (Array.isArray(nextRequest[fieldName])) {
+    if (isRecordArray(nextRequest[fieldName])) {
       nextRequest[fieldName] = toVectorDocumentBRepGraphUidFromArray(nextRequest[fieldName]);
     }
   }
-  if (method === "ReplaceSketchDraftEdges" && Array.isArray(nextRequest.edges)) {
+  if (method === "ReplaceSketchDraftEdges" && isRecordArray(nextRequest.edges)) {
     nextRequest.edges = toVectorSketchEdgeSpecFromArray(nextRequest.edges);
   }
   void method;
@@ -299,15 +344,16 @@ function sanitizeResponse(data) {
   if (Array.isArray(data)) {
     return data.map((item) => sanitizeResponse(item));
   }
-  if ("value" in data && typeof data.value === "number" && Object.keys(data).indexOf("value") === -1) {
-    return { value: data.value };
+  const dataRecord = data;
+  if ("value" in dataRecord && typeof dataRecord.value === "number" && Object.keys(dataRecord).indexOf("value") === -1) {
+    return { value: dataRecord.value };
   }
   const result = {};
   try {
-    const keys = Object.keys(data);
+    const keys = Object.keys(dataRecord);
     for (const key of keys) {
       try {
-        const value = data[key];
+        const value = dataRecord[key];
         result[key] = sanitizeResponse(value);
       } catch (e) {
         void e;
@@ -351,7 +397,7 @@ self.onmessage = async (event) => {
           throw new Error(`Method ${method} not found in WASM module`);
         }
         const normalizedRequest = normalizeRequestForWasm(method, msg.request);
-        const rawResponse = wasmModule[method](normalizedRequest);
+        const rawResponse = getModuleMethod(wasmModule, method)(normalizedRequest);
         const sanitized = sanitizeResponse(rawResponse);
         respond({ id, type: "result", result: sanitized });
         break;
@@ -365,8 +411,11 @@ self.onmessage = async (event) => {
           throw new Error(`Method ${method} not found in WASM module`);
         }
         const normalizedRequest = normalizeRequestForWasm(method, msg.request);
-        const req = { ...normalizedRequest, data: msg.binaryData };
-        const rawResponse = wasmModule[method](req);
+        const req = {
+          ...expectRecord(normalizedRequest, `${method} binary request must be an object`),
+          data: msg.binaryData
+        };
+        const rawResponse = getModuleMethod(wasmModule, method)(req);
         const sanitized = sanitizeResponse(rawResponse);
         respond({ id, type: "result", result: sanitized });
         break;

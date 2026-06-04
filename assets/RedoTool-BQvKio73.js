@@ -1,1 +1,0 @@
-class s{constructor(e){this.id="document.redo",this.listeners=new Set,this.onDone=e}activate(e){e.document.redo().then(()=>e.viewport.refreshMeshes()).then(()=>this.onDone()).catch(t=>{console.error("[RedoTool] redo failed",t),this.onDone()})}deactivate(){}subscribe(e){return this.listeners.add(e),()=>{this.listeners.delete(e)}}getSnapshot(){return null}}export{s as RedoTool};

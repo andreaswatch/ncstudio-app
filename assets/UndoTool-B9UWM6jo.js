@@ -1,1 +1,0 @@
-class n{constructor(e){this.id="document.undo",this.listeners=new Set,this.onDone=e}activate(e){e.document.undo().then(()=>e.viewport.refreshMeshes()).then(()=>this.onDone()).catch(t=>{console.error("[UndoTool] undo failed",t),this.onDone()})}deactivate(){}subscribe(e){return this.listeners.add(e),()=>{this.listeners.delete(e)}}getSnapshot(){return null}}export{n as UndoTool};
